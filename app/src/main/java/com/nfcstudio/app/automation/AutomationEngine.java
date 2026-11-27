@@ -140,6 +140,7 @@ public final class AutomationEngine {
                     }
                     String error=err;
                     handler.post(()-> {
+                        if(closed)return;
                         store.log(t+(error==null?" OK":" failed: "+error));
                         step(a,i+1,name,failures+(error==null?0:1));
                     });

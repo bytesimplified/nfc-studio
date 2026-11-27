@@ -22,8 +22,8 @@ public class AutomationJourneyTest {
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)){
             onView(withText("Create automation")).perform(scrollTo(),click());
             onView(withHint("Profile name")).perform(scrollTo(),replaceText("E2E Profile"),closeSoftKeyboard());
-            onView(withText("Open app")).perform(scrollTo(),click());
-            onData(allOf(is(instanceOf(String.class)),is("Show message"))).perform(click());
+            onView(withClassName(endsWith("Spinner"))).perform(scrollTo(),click());
+            onData(is("Show message")).perform(click());
             onView(withHint("Message")).perform(scrollTo(),replaceText("Hello from E2E"),closeSoftKeyboard());
             onView(withText("Save automation")).perform(scrollTo(),click());
             onView(withText("E2E Profile")).check(matches(isDisplayed()));
@@ -32,7 +32,8 @@ public class AutomationJourneyTest {
             onView(withText("Saved automations (1)")).perform(scrollTo(),click());
             onView(withText("E2E Profile • 1 actions")).perform(scrollTo(),click());
             onView(withText("Run now")).perform(scrollTo(),click());
-            pressBack();
+            onView(withText("Back")).perform(scrollTo(),click());
+            onView(withText("Home")).perform(scrollTo(),click());
             onView(withText("Scan / execution history")).perform(scrollTo(),click());
             onView(withText(containsString("Started E2E Profile"))).perform(scrollTo()).check(matches(isDisplayed()));
         }
