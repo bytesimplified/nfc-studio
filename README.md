@@ -20,7 +20,7 @@ Java 17, Android SDK 35, Gradle 8.9 and AGP 8.7.3. Java is retained to minimize 
 
 ## Build and test
 
-GitHub Actions runs JVM unit tests, compiles APK and instrumented test APK, verifies the debug signature, uploads the APK and runs E2E tests on an Android emulator. Download **NFC-Studio-APK** from a successful APK job. E2E results are separate. Different CI runners can use different debug keys; back up profiles before reinstalling.
+GitHub Actions runs JVM unit tests, compiles the app APK, verifies the debug signature and uploads the APK. A separate E2E job compiles the instrumented test APK and runs tests on an Android emulator. Download **NFC-Studio-APK** from a successful APK job. E2E results are separate. Different CI runners can use different debug keys; back up profiles before reinstalling.
 
 Local commands (JDK 17, Gradle 8.9, SDK 35/build-tools 35.0.0):
 ```sh
