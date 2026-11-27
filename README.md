@@ -1,11 +1,46 @@
-# NFC Studio
+# NFC Studio v0.2
 
-Native Java Android NFC tag manager and tap-based automation prototype, version 0.1. Android 10+ (API 29), NFC hardware required. No accounts, ads, or third-party runtime libraries.
+Native Android NFC tag management and tap-triggered automations. Android 10+; NFC hardware is required for tag operations. No account, advertisements or root. This is a prototype, not a Play Store release.
 
-## Build
-Open the repository's Actions tab, select Build NFC Studio APK and run the workflow. Download NFC-Studio-APK from the successful run's artifacts and extract app-debug.apk. This is a debug-signed APK, not a Play Store release. Different CI runners may use different debug signing keys; back up profiles before reinstalling.
+## Architecture
 
-Local build: JDK 17, Gradle 8.9, Android SDK 35 and build-tools 35.0.0. Run gradle :app:assembleDebug.
+```
+app/src/main/java/com/nfcstudio/app/
+├── MainActivity.java       # Android entry point and lifecycle
+├── automation/             # Validation, sequential execution, Android actions, HTTPS
+├── data/                   # Local profile repository, JSON and backup validation
+├── nfc/                    # Tag I/O, record encoding, write and trigger policies
+└── ui/                     # Shared UI and separate home, tag, automation, settings screens
+test/java/com/nfcstudio/app/ # JVM unit tests (mirrors production packages)
+e2e/java/com/nfcstudio/app/  # Android instrumentation and UI journeys
+docs/                       # Test matrix and device acceptance
+```
 
-## Status
-Experimental source; Android compilation and physical NFC testing have not yet been verified. NDEF read/write/format/copy/erase/lock, local tag profiles, app launches and supported Android settings are intended features. Android permissions and hardware restrictions apply. Do not use valuable or permanently locked tags for first tests. Backups can contain private webhook URLs; keep them private.
+Java 17, Android SDK 35, Gradle 8.9 and AGP 8.7.3. Java is retained to minimize migration risk; Gradle uses Groovy and CI uses YAML/shell. Tests use JUnit and Espresso. The UI is still native programmatic Android views, and storage is still SharedPreferences/JSON. Compose, Room, MVVM, per-action handlers and a larger feature expansion are future work, not part of this refactor.
+
+## Build and test
+
+GitHub Actions runs JVM unit tests, compiles APK and instrumented test APK, verifies the debug signature, uploads the APK and runs E2E tests on an Android emulator. Download **NFC-Studio-APK** from a successful APK job. E2E results are separate. Different CI runners can use different debug keys; back up profiles before reinstalling.
+
+Local commands (JDK 17, Gradle 8.9, SDK 35/build-tools 35.0.0):
+```sh
+gradle :app:testDebugUnitTest
+gradle :app:assembleDebug
+gradle :app:connectedDebugAndroidTest # emulator or USB-connected phone
+```
+
+## Features
+
+- Inspect NDEF tags, UID, technologies, capacity, writability; write, format, erase, copy records and lock compatible tags (irreversible).
+- Standard NDEF text, URI, phone, email, SMS, GPS, vCard, Wi-Fi WSC and Android app records. Wi-Fi behavior varies by OS. Blank format operations need a follow-up verification scan.
+- Local multi-action profiles, app chooser, links, volume/ringer, DND, brightness, rotation, flashlight, vibration, message, alarm/timer, Wi-Fi/Bluetooth settings panels, HTTPS POST, delay; permission restrictions apply.
+- Register profile tags, duplicate prevention, confirmation, manual run, restore supported settings, history and JSON import/export. Tag IDs are not cryptographic authentication. Do not use NFC as a security credential.
+- Exact chip ID, password protection, conditional actions and raw-memory editing are not implemented.
+
+## Hardware and privacy
+
+Emulator tests do not prove physical NFC read/write or background launching. See [hardware acceptance checklist](docs/testing.md). Use a spare writable tag first. Backups may contain private webhook URLs; keep them private. Data is stored on the device. HTTPS requests occur only for configured webhooks.
+
+## Limitations
+
+The Android UI remains a prototype. Some actions depend on device-specific behavior, permissions and available apps. Automation running when an Activity is destroyed is cancelled rather than silently continued in the background.
