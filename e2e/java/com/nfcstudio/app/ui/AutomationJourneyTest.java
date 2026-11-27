@@ -33,18 +33,30 @@ public class AutomationJourneyTest {
             onView(withText("E2E Profile")).check(matches(isDisplayed()));
         }
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)){
-            onView(withText("Saved automations (1)")).perform(scrollTo(),click());
-            onView(withText("E2E Profile • 1 actions")).perform(scrollTo(),click());
+            onView(withContentDescription("Navigate Routines")).perform(click());
+            onView(withText("E2E Profile")).perform(scrollTo(),click());
             onView(withText("Run now")).perform(scrollTo(),click());
             onView(withText("Back")).perform(scrollTo(),click());
-            onView(withText("Home")).perform(scrollTo(),click());
+            onView(withContentDescription("Navigate Home")).perform(click());
             onView(withText("Scan / execution history")).perform(scrollTo(),click());
             onView(withText(containsString("Started E2E Profile"))).perform(scrollTo()).check(matches(isDisplayed()));
         }
     }
+    @Test public void bottomNavigationOpensRealScreens(){
+        try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)){
+            onView(withContentDescription("Navigate Tags")).perform(click());
+            onView(withText("My tags")).check(matches(isDisplayed()));
+            onView(withContentDescription("Navigate Routines")).perform(click());
+            onView(withText("Automations")).check(matches(isDisplayed()));
+            onView(withContentDescription("Navigate Settings")).perform(click());
+            onView(withText("Appearance")).check(matches(isDisplayed()));
+            onView(withContentDescription("Navigate Home")).perform(click());
+            onView(withText("NFC Studio")).check(matches(isDisplayed()));
+        }
+    }
     @Test public void scanCancellationReturnsHome(){
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)){
-            onView(withText("Read / inspect a tag")).perform(scrollTo(),click());
+            onView(withContentDescription("Navigate Scan")).perform(click());
             onView(withText("Ready to scan")).check(matches(isDisplayed()));
             onView(withText("Cancel / Home")).perform(scrollTo(),click());
             onView(withText("NFC Studio")).check(matches(isDisplayed()));

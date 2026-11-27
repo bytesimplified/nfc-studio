@@ -50,6 +50,7 @@ public final class AutomationEngine {
         }
         JSONObject p=store.profiles().optJSONObject(id);
         if(p==null)return;
+        if(!p.optBoolean("enabled",true)){notifyUser("This routine is disabled");return;}
         String key="snapshot_"+id;
         String prior=store.preferences().getString(key,null);
         if(p.optBoolean("toggle")&&prior!=null) {

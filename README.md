@@ -1,4 +1,4 @@
-# NFC Studio v0.2
+# NFC Studio v0.3
 
 Native Android NFC tag management and tap-triggered automations. Android 10+; NFC hardware is required for tag operations. No account, advertisements or root. This is a prototype, not a Play Store release.
 
@@ -16,7 +16,7 @@ e2e/java/com/nfcstudio/app/  # Android instrumentation and UI journeys
 docs/                       # Test matrix and device acceptance
 ```
 
-Java 17, Android SDK 35, Gradle 8.9 and AGP 8.7.3. Java is retained to minimize migration risk; Gradle uses Groovy and CI uses YAML/shell. Tests use JUnit and Espresso. The UI is still native programmatic Android views, and storage is still SharedPreferences/JSON. Compose, Room, MVVM, per-action handlers and a larger feature expansion are future work, not part of this refactor.
+Java 17, Android SDK 35, Gradle 8.9 and AGP 8.7.3. Java is retained to minimize migration risk; Gradle uses Groovy and CI uses YAML/shell. Tests use JUnit and Espresso. The UI uses a custom Material-inspired native view design system; storage is still SharedPreferences/JSON. Compose, Room, MVVM and per-action handlers are future work.
 
 ## Build and test
 
@@ -37,10 +37,18 @@ gradle :app:connectedDebugAndroidTest # emulator or USB-connected phone
 - Register profile tags, duplicate prevention, confirmation, manual run, restore supported settings, history and JSON import/export. Tag IDs are not cryptographic authentication. Do not use NFC as a security credential.
 - Exact chip ID, password protection, conditional actions and raw-memory editing are not implemented.
 
+## v0.3 visual refresh
+- AMOLED black, midnight blue, light and system themes.
+- Gradient dashboard, vector icons, animated NFC radar (respects system animation settings), fixed bottom navigation, live profile/tag counts.
+- Record-type grid and live payload byte preview, structured scan result cards.
+- Routine cards, enabled switches, editable templates, action reordering, installed app picker with icons.
+- Permission dashboard and local backup/history screens.
+- No sample tags or fake NFC success; scanning uses real hardware.
+
 ## Hardware and privacy
 
 Emulator tests do not prove physical NFC read/write or background launching. See [hardware acceptance checklist](docs/testing.md). Use a spare writable tag first. Backups may contain private webhook URLs; keep them private. Data is stored on the device. HTTPS requests occur only for configured webhooks.
 
 ## Limitations
 
-The Android UI remains a prototype. Some actions depend on device-specific behavior, permissions and available apps. Automation running when an Activity is destroyed is cancelled rather than silently continued in the background.
+The new UI is designed for modern large Android displays but has not yet been verified on a Galaxy S25 Ultra. Some actions depend on device-specific behavior, permissions and available apps. Automation running when an Activity is destroyed is cancelled rather than silently continued in the background.
